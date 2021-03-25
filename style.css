@@ -1,0 +1,108 @@
+@import "../node_modules/picnic/picnic.min.css";
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.main {
+  position: relative;
+  width: 60%;
+  margin: 0 auto;
+}
+.login-container {
+  right: 0;
+  width: 300px;
+  display: flex;
+  flex-flow: column nowrap;
+  margin: 10px 5px;
+  border: 2px solid #0074d9;
+  border-radius: 5px;
+  box-shadow: 5px 5px 13px -1px rgba(0, 0, 0, 0.52);
+  position: absolute;
+  animation: bounceInDown; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1s; /* don't forget to set a duration! */
+  display: none;
+}
+.registration-container {
+  right: 0;
+  position: absolute;
+  width: 350px;
+  margin: 10px 5px;
+  border: 2px solid #0074d9;
+  border-radius: 5px;
+  box-shadow: 5px 5px 13px -1px rgba(0, 0, 0, 0.52);
+  display: flex;
+  flex-flow: column nowrap;
+  animation: bounceInDown; /* referring directly to the animation's @keyframe declaration */
+  animation-duration: 1s; /* don't forget to set a duration! */
+  display: none;
+}
+.registration-container .close-button,
+.login-container .close-button {
+  font-family: "Material Icons";
+  font-weight: bolder;
+  right: -8px;
+  top: -8px;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  color: #0074d9;
+  font-size: 1.5rem;
+  background-color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  justify-self: flex-end;
+}
+
+.login-container > *:not(.login-registration-header):not(label, .close-button),
+.registration-container
+  > *:not(.login-registration-header):not(label, .close-button) {
+  margin: 3px auto 10px auto;
+  width: 90%;
+}
+.login-container > label,
+.registration-container > label {
+  margin: 0 0 0px 5px;
+  width: 90%;
+}
+/* .login-input {
+  margin: 10px 0;
+} */
+
+.login-registration-header {
+  background-color: #0074d9;
+  color: white;
+  max-height: 3rem;
+  display: flex;
+  align-items: center;
+  padding: 0 0 0 5px;
+}
+
+.active {
+  display: flex !important;
+}
+.nav-bar {
+  display: flex;
+  flex-direction: row nowrap;
+  justify-content: center;
+  background-color: slategray;
+  width: 100%;
+}
+.nav-bar a {
+  margin: 10px;
+}
+
+.red-result-notification {
+  display: none;
+  color: red;
+  font-weight: bolder;
+}
+.green-result-notification {
+  display: none;
+  color: green;
+  font-weight: bolder;
+}
