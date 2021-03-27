@@ -19,7 +19,25 @@
   </head>
   <body>
     <div class="main">
-      <div class="login-container">
+      <aside>
+        <form class='post-form' action="">
+          
+             <label>Title</label>
+                <input id="post-title"type="text">
+              <label>Description</label>
+                <textarea id='post-description' type="text" placeholder="Enter Description"></textarea>
+              <label for="">Price</label>
+                <input type="text" id="post-price">
+              <label for="">location</label>
+              <input type="text" id='post-location'> 
+          <label for="" >Will Deliver?</label>
+             <input type="checkbox" id='post-is-delivered'class='is-delivered-checkbox' checked>
+          <button class="submit-post-btn">Post</button>
+        </form>
+      </aside>
+        <div class="avatar"><img class="img-avatar"></img></div>
+        <div class="posts-display"></div>
+       <div class="login-container">
         <span class="close-button"
           ><i class="material-icons">highlight_off</i></span
         >
@@ -49,12 +67,15 @@
         <input type="password" name="" id="register-reenter-login-password" />
         <button class="register-btn">Register</button>
         <span class="notification-span"></span>
-      </div>
-      <div class="nav-bar">
-        <a class="register-link button" href="#">Register</a
-        ><a href="#" class="login-link button">Login</a
-        ><a href="#" class="logout-link button">Logout</a>
-      </div>
+          </div>
+  
+      <footer><div class="nav-bar">
+        <a class="register-link " href="#">Register</a
+        ><a href="#" class="login-link ">Login</a
+        ><a href="#" class="logout-link ">Logout</a>
+      </div></footer>
+      
+      
     </div>
   </body>
 </html>

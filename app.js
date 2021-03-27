@@ -1,19 +1,31 @@
 const API_BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-VPI-RM-WEB-PT";
 
-const generalFetch = async function (url, method, body) {
+let loginToken;
+const generalFetch = async function (url, method, body, token, createType) {
   try {
-    //debugger;
-    const response = await fetch(url, {
-      method: `${method}`,
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        user: body,
-      }),
+    let response;
+    console.log(token);
+
+    response = fetch(API_BASE_URL + "/test/me", {
+      headers: { Authorization: token },
     });
+    console.log(response);
+
+    if (method == "GET") {
+      response = await fetch(url);
+    } else {
+      response = await fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: body,
+      });
+    }
     const data = await response.json();
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -21,15 +33,18 @@ const generalFetch = async function (url, method, body) {
 };
 
 const logIn = async function (body) {
-  //debugger;
   const { success, error, data } = await generalFetch(
     API_BASE_URL + "/users/login",
     "POST",
-    body
+    JSON.stringify({ user: body }),
+    "",
+    "user"
   );
 
   if (success) {
     const { token, message } = data;
+    console.log(data);
+    loginToken = token;
     localStorage.setItem("token", token);
     return {
       success,
@@ -46,11 +61,10 @@ const isLoggedIn = function () {};
 
 async function register({ username, password }) {
   try {
-    //debugger;
     const response = await fetch(API_BASE_URL + "/users/register", {
       method: "POST",
       headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         user: {
@@ -59,14 +73,43 @@ async function register({ username, password }) {
         },
       }),
     });
-    //debugger;
     const data = await response.json();
     return data;
   } catch (error) {
-    //debugger;
     console.log(error);
   }
 }
+const fetchPosts = async function () {
+  try {
+    const response = await generalFetch(
+      API_BASE_URL + "/posts",
+      "GET",
+      "",
+      "user"
+    );
+    //console.log(response);
+    renderPosts(response);
+  } catch (error) {
+    console.log(error);
+  }
+};
+const createPost = async function (body) {
+  try {
+    const { post } = await generalFetch(
+      API_BASE_URL + "/posts",
+      "POST",
+      JSON.stringify({ post: body }),
+      "Bearer " + loginToken,
+      "post"
+    );
+    const posts = $(".posts-display").data("posts");
+    posts.push(post);
+    renderPosts(posts);
+    console.log(posts);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const clearRegistrationInputs = function () {
   for (let el of $(".registration-container")
@@ -76,12 +119,6 @@ const clearRegistrationInputs = function () {
   }
 };
 const handleCloseButtonClick = function () {
-  //debugger;
-
-  //   for (let el of $(this).closest("div").children("input")) {
-  //     //console.log($(el));
-  //     $(el).trigger("reset");
-  //   }
   clearRegistrationInputs();
   let openWindow = $(this).closest(".registration-container");
   if (openWindow.length == 1) {
@@ -93,6 +130,13 @@ const handleCloseButtonClick = function () {
     openWindow.removeClass("active");
   }
 };
+const renderAvatar = async function (userName) {
+  const { url } = await fetch(
+    `https://avatars.dicebear.com/api/avataaars/${userName}.svg`
+  );
+  $(".img-avatar").attr("src", url);
+  $(".img-avatar").addClass("active");
+};
 
 $(".registration-container").on(
   "click",
@@ -102,6 +146,10 @@ $(".registration-container").on(
 
 const handleNavLinksClick = function (e) {
   e.preventDefault();
+  const token = localStorage.getItem("token");
+  if (token !== null) {
+    return;
+  }
   if ($(this).hasClass("login-link")) {
     $(".login-container").addClass("active");
     return;
@@ -130,14 +178,14 @@ const handleRegisterButtonClick = async function (e) {
       localStorage.setItem("token", token);
       notificationLoReg(
         message,
-        $(this).closest(".notification-span"),
+        $(".registration-container").find(".notification-span"),
         "green-result-notification"
       );
     } else {
       const { name, message } = response.error;
       notificationLoReg(
         message,
-        $(this).closest(".notification-span"),
+        $(".registration-container").find(".notification-span"),
         "red-result-notification"
       );
     }
@@ -149,13 +197,12 @@ const handleRegisterButtonClick = async function (e) {
 };
 
 const handleLoginButtonClick = async function (e) {
-  debugger;
   e.preventDefault();
-  //debugger;
-  const token = JSON.stringify(localStorage.getItem("token"));
-  if (token !== "null") {
+  const token = localStorage.getItem("token");
+  if (token !== null) {
     return;
   }
+  const userName = $("#login-user-id").val();
   try {
     const response = await logIn({
       username: $("#login-user-id").val(),
@@ -164,17 +211,19 @@ const handleLoginButtonClick = async function (e) {
     const { success, data, error } = response;
 
     if (success) {
-      console.log($(this).closest(".notification-span"));
       notificationLoReg(
         data.message,
-        $(this).closest(".notification-span"),
+        $(".login-container").find(".notification-span"),
         "green-result-notification"
       );
+      renderAvatar(userName);
+      udpateLoginButtons();
+
       return;
     } else {
       notificationLoReg(
         error.message,
-        $(this).closest(".notification-span"),
+        $(".login-container").find(".notification-span"),
         "red-result-notification"
       );
     }
@@ -183,9 +232,100 @@ const handleLoginButtonClick = async function (e) {
     console.log(error);
   }
 };
+const udpateLoginButtons = async function () {
+  const token = await localStorage.getItem("token");
+  loginToken = token;
+  if (token !== null) {
+    $(".register-link").attr("disabled", true);
+    $(".login-link").attr("disabled", true);
+    $(".logout-link ").attr("disabled", false);
+  } else {
+    $(".register-link").attr("disabled", false);
+    $(".login-link").attr("disabled", false);
+    $(".logout-link ").attr("disabled", true);
+    $(".img-avatar").attr("src", "");
+    $(".img-avatar").removeClass("active");
+  }
+};
+const handleLogOutLinkClick = async function () {
+  const token = await localStorage.getItem("token");
+  if (token !== null) localStorage.removeItem("token");
+  udpateLoginButtons();
+};
+
+const renderPosts = function ({ data }) {
+  const { posts } = data;
+  const postsElement = posts.map((post) =>
+    $(`<div class='post'>`)
+      .append(
+        `${Object.entries(post)
+          .map((entry) => createPostElement(entry))
+          .join("")}`
+      )
+      .data("post", post)
+  );
+  $(".posts-display").empty();
+  $(".posts-display").data("posts", data);
+  $(".posts-display").append(postsElement);
+
+  console.log(postsElement);
+};
+
+const createPostElement = function ([enteryName, enteryValue]) {
+  if (enteryName == "_id") return "";
+  if (enteryName == "__v") return "";
+  if (enteryName == "cohort") return "";
+  enteryName = enteryName
+    .replace("willDeliver", "Will Deliver?")
+    .replace("createdAt", "Created At")
+    .replace("updatedAt", "Updated At")
+    .replace("isAuthor", "Is Author");
+  if (enteryName == "messages") {
+    return `<span class="post-entries"><strong>Messages</strong>: ${enteryValue.length}</span>`;
+  }
+  if (enteryName == "author" && enteryValue !== undefined) {
+    const { username } = enteryValue;
+    return `<span class="post-entries"><strong>${
+      enteryName.split("")[0].toUpperCase() +
+      enteryName
+        .split("")
+        .splice(1, enteryName.split("").length - 1)
+        .join("")
+    }:</strong> ${username}</span>`;
+  }
+
+  return `<span class="post-entries"><strong>${
+    enteryName.split("")[0].toUpperCase() +
+    enteryName
+      .split("")
+      .splice(1, enteryName.split("").length - 1)
+      .join("")
+  }:</strong>  ${
+    enteryValue == true ? `Yes` : enteryValue == false ? `No` : enteryValue
+  }</span>`;
+};
+
+const handlePostBtnClick = function (e) {
+  e.preventDefault();
+  //debugger;
+  const body = {
+    title: $("#post-title").val(),
+    description: $("#post-description").val(),
+    price: $("#post-price").val(),
+    location: $("#post-location").val(),
+    willDeliver: $("#post-is-delivered").is(":checked") ? true : false,
+  };
+  createPost(body);
+  console.log(body);
+};
 
 $(".login-container").on("click", ".close-button", handleCloseButtonClick);
 $(".nav-bar").on("click", ".login-link, .register-link", handleNavLinksClick);
 $(".login-btn").on("click", ".login-btn", handleLoginButtonClick);
 $(".register-btn").click(handleRegisterButtonClick);
 $(".login-btn").click(handleLoginButtonClick);
+$(".logout-link").click(handleLogOutLinkClick);
+$(".submit-post-btn").click(handlePostBtnClick);
+
+udpateLoginButtons();
+fetchPosts();
