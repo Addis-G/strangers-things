@@ -15,11 +15,6 @@ export const generalFetch = async function (
     let response;
     console.log(token);
 
-    // response = fetch(API_BASE_URL + "/test/me", {
-    //   headers: { Authorization: token },
-    // });
-    // console.log(response);
-
     if (method == "GET") {
       response = await fetch(API_BASE_URL + url, {
         headers: { Authorization: token },
@@ -43,7 +38,6 @@ export const generalFetch = async function (
 };
 
 export const logIn = async function (body) {
-  //debugger;
   const { success, error, data } = await generalFetch(
     "/users/login",
     "POST",
@@ -103,19 +97,27 @@ export const fetchPosts = async function () {
   }
 };
 export const createPost = async function (body) {
-  debugger;
   try {
-    const { post } = await generalFetch(
+    const response = await generalFetch(
       "/posts",
       "POST",
       JSON.stringify({ post: body }),
       "Bearer " + localStorage.getItem("token"),
       "post"
     );
-    const posts = $(".posts-display").data("posts");
-    posts.push(post);
-    renderPosts(posts);
-    console.log(posts);
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const testMe = async (token) => {
+  try {
+    const response = await fetch(API_BASE_URL + "/test/me", {
+      headers: { Authorization: "Bearer " + token },
+    });
+    return response;
   } catch (error) {
     console.log(error);
   }

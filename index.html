@@ -18,10 +18,47 @@
     <title>Document</title>
   </head>
   <body>
+    <div class="nav-bar"><div><button class="register-link " href="#">Register</button
+      ><button href="#" class="login-link ">Login</button
+      ><button href="#" class="logout-link ">Logout</button></div>
+      
+      <div class="avatar"><img class="img-avatar"></img></div>
+    </div>
+
+        <div class="login-container">
+          <span class="close-button">
+            <i class="material-icons">highlight_off</i></span>
+          <header class="login-registration-header"><h2>Login</h2></header>
+          <div></div>
+          <label for="login-user-id">User Id:</label>
+          <input class="login-input" type="text" name="" id="login-user-id" />
+          <label for="login-password">Password:</label>
+          <input
+            class="login-input"
+            type="password"
+            name=""
+            id="login-user-password"
+          />
+          <button class="login-btn">Login</button>
+          <span class="notification-span"></span>
+        </div>
+        <div class="registration-container">
+          <span class="close-button"
+            ><i class="material-icons">highlight_off</i></span
+          >
+          <header class="login-registration-header"><h2>Register</h2></header>
+          <label for="register-user-id">User Id:</label>
+          <input type="text" name="" id="register-user-id" />
+          <label for="register-login-password">Password:</label>
+          <input type="password" name="" id="register-login-password" />
+          <label for="register-reenter-login-password">Re-enter Password:</label>
+          <input type="password" name="" id="register-reenter-login-password" />
+          <button class="register-btn">Register</button>
+          <span class="notification-span"></span>
+            </div>
     <div class="main">
       <aside>
         <form class='post-form' action="">
-          
              <label>Title</label>
                 <input id="post-title"type="text">
               <label>Description</label>
@@ -35,45 +72,11 @@
           <button class="submit-post-btn">Post</button>
         </form>
       </aside>
-        <div class="avatar"><img class="img-avatar"></img></div>
+        
         <div class="posts-display"></div>
-       <div class="login-container">
-        <span class="close-button"
-          ><i class="material-icons">highlight_off</i></span
-        >
-        <header class="login-registration-header"><h2>Login</h2></header>
-        <label for="login-user-id">User Id:</label>
-        <input class="login-input" type="text" name="" id="login-user-id" />
-        <label for="login-password">Password:</label>
-        <input
-          class="login-input"
-          type="password"
-          name=""
-          id="login-user-password"
-        />
-        <button class="login-btn">Login</button>
-        <span class="notification-span"></span>
-      </div>
-      <div class="registration-container">
-        <span class="close-button"
-          ><i class="material-icons">highlight_off</i></span
-        >
-        <header class="login-registration-header"><h2>Register</h2></header>
-        <label for="register-user-id">User Id:</label>
-        <input type="text" name="" id="register-user-id" />
-        <label for="register-login-password">Password:</label>
-        <input type="password" name="" id="register-login-password" />
-        <label for="register-reenter-login-password">Re-enter Password:</label>
-        <input type="password" name="" id="register-reenter-login-password" />
-        <button class="register-btn">Register</button>
-        <span class="notification-span"></span>
-          </div>
+       
   
-      <footer><div class="nav-bar">
-        <button class="register-link " href="#">Register</button
-        ><button href="#" class="login-link ">Login</button
-        ><button href="#" class="logout-link ">Logout</button>
-      </div></footer>
+      <footer></footer>
       
       
     </div>

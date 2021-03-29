@@ -10,6 +10,8 @@ import {
   handlePostBtnClick,
 } from "./handlers.js";
 
+window.app_state = { userName: null, posts: null };
+
 const logOut = function () {};
 
 const isLoggedIn = function () {};

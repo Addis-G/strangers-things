@@ -1,4 +1,11 @@
-import { generalFetch, createPost, register, logIn } from "./api_calls.js";
+import {
+  generalFetch,
+  createPost,
+  register,
+  logIn,
+  testMe,
+} from "./api_calls.js";
+import { renderPosts } from "./renderers.js";
 
 export const handleCloseButtonClick = function () {
   clearRegistrationInputs();
@@ -51,13 +58,15 @@ export const handleLoginButtonClick = async function (e) {
   e.preventDefault();
   const token = localStorage.getItem("token");
   if (token !== null) {
+    renderAvatar();
     return;
   }
   const userName = $("#login-user-id").val();
+  const passWord = $("#login-user-password").val();
   try {
     const response = await logIn({
-      username: $("#login-user-id").val(),
-      password: $("#login-user-password").val(),
+      username: userName, //$("#login-user-id").val(),
+      password: passWord, //$("#login-user-password").val(),
     });
     const { success, data, error } = response;
 
@@ -67,7 +76,7 @@ export const handleLoginButtonClick = async function (e) {
         $(".login-container").find(".notification-span"),
         "green-result-notification"
       );
-      renderAvatar(userName);
+      window.app_state.userName = $("#login-user-id").val();
       udpateLoginButtons();
 
       return;
@@ -92,12 +101,31 @@ const clearRegistrationInputs = function () {
   }
 };
 
-const renderAvatar = async function (userName) {
-  const { url } = await fetch(
-    `https://avatars.dicebear.com/api/avataaars/${userName}.svg`
-  );
-  $(".img-avatar").attr("src", url);
-  $(".img-avatar").addClass("active");
+const renderAvatar = async function () {
+  if (window.app_state.userName == null) {
+    const token = localStorage.getItem("token");
+    if (token == null) return;
+    try {
+      const response = await testMe(token);
+      const { data } = await response.json();
+      getAvatar(data.user.username);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    getAvatar(window.app_state.userName);
+  }
+};
+const getAvatar = async (username) => {
+  try {
+    const { url } = await fetch(
+      `https://avatars.dicebear.com/api/avataaars/${username}.svg`
+    );
+    $(".img-avatar").attr("src", url);
+    $(".img-avatar").addClass("active");
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const handleNavLinksClick = function (e) {
@@ -131,7 +159,14 @@ export const handlePostBtnClick = function (e) {
     location: $("#post-location").val(),
     willDeliver: $("#post-is-delivered").is(":checked") ? true : false,
   };
-  createPost(body);
+  try {
+    const post = createPost(body);
+    window.app_stat.posts.push(post);
+    renderPosts(window.app_stat);
+  } catch (error) {
+    console.log(error);
+  }
+
   console.log(body);
 };
 
@@ -141,11 +176,11 @@ const notificationLoReg = function (message, element, messageClass) {
 };
 export const udpateLoginButtons = async function () {
   const token = await localStorage.getItem("token");
-
   if (token !== null) {
     $(".register-link").attr("disabled", true);
     $(".login-link").attr("disabled", true);
     $(".logout-link ").attr("disabled", false);
+    renderAvatar();
   } else {
     $(".register-link").attr("disabled", false);
     $(".login-link").attr("disabled", false);
