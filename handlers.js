@@ -1,11 +1,12 @@
 import {
-  generalFetch,
   createPost,
   register,
   logIn,
   testMe,
+  deletePost,
 } from "./api_calls.js";
 import { renderPosts } from "./renderers.js";
+import { isLoggedIn } from "./helpers.js";
 
 export const handleCloseButtonClick = function () {
   clearRegistrationInputs();
@@ -130,10 +131,11 @@ const getAvatar = async (username) => {
 
 export const handleNavLinksClick = function (e) {
   e.preventDefault();
-  const token = localStorage.getItem("token");
-  if (token !== null) {
-    return;
-  }
+  // const token = localStorage.getItem("token");
+  // if (token !== null) {
+  //   ()
+  //   return;
+  // }
   if ($(this).hasClass("login-link")) {
     $(".login-container").addClass("active");
     return;
@@ -149,8 +151,14 @@ export const handleLogOutLinkClick = async function () {
   udpateLoginButtons();
 };
 
-export const handlePostBtnClick = function (e) {
+export const handlePostBtnClick = async function (e) {
+  //debugger;
   e.preventDefault();
+  if (!isLoggedIn()) {
+    $(".login-container").addClass("active");
+    return;
+  }
+
   //debugger;
   const body = {
     title: $("#post-title").val(),
@@ -160,14 +168,13 @@ export const handlePostBtnClick = function (e) {
     willDeliver: $("#post-is-delivered").is(":checked") ? true : false,
   };
   try {
-    const post = createPost(body);
-    window.app_stat.posts.push(post);
-    renderPosts(window.app_stat);
+    const { data } = await createPost(body);
+    window.app_state.posts.push(data.post);
+    renderPosts(window.app_state);
+    $(".post-form").trigger("reset");
   } catch (error) {
     console.log(error);
   }
-
-  console.log(body);
 };
 
 const notificationLoReg = function (message, element, messageClass) {
@@ -187,5 +194,22 @@ export const udpateLoginButtons = async function () {
     $(".logout-link ").attr("disabled", true);
     $(".img-avatar").attr("src", "");
     $(".img-avatar").removeClass("active");
+  }
+};
+
+export const handlePostDeletBtnClick = async function () {
+  const post_id = $(this).closest(".post").data("post_id");
+
+  try {
+    const response = await deletePost(post_id);
+
+    if (response.success) {
+      window.app_state.posts = [
+        ...window.app_state.posts.filter((post) => post._id !== post_id),
+      ];
+    }
+    renderPosts(window.app_state);
+  } catch (error) {
+    console.log(error);
   }
 };

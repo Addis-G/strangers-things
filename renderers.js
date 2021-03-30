@@ -1,6 +1,9 @@
-export const renderPosts = function ({ data }) {
-  const { posts } = data;
-  window.app_state.posts = posts;
+import { handlePostDeletBtnClick } from "./handlers.js";
+
+export const renderPosts = function ({ posts }) {
+  //const { posts } = data;
+  //debugger;
+
   const postsElement = posts.map((post) =>
     $(`<div class='post'></div>`)
       .append(
@@ -8,7 +11,7 @@ export const renderPosts = function ({ data }) {
           .map((entry) => createPostElement(entry))
           .join("")}`
       )
-      .data("post", post)
+      .data("post_id", post._id)
       .prepend(
         `<header class='post-header'>${createPostEntryElement(
           "Title",
@@ -17,7 +20,9 @@ export const renderPosts = function ({ data }) {
       )
       .append(
         `<footer class="post-footer">${
-          post.isAuthor ? `<button>Delete</button>` : `<button>Message</button>`
+          post.isAuthor
+            ? `<button class='post-delete'>Delete</button>`
+            : `<button>Message</button>`
         }
         </footer>`
       )
@@ -25,8 +30,12 @@ export const renderPosts = function ({ data }) {
   const postHeaderElements = $(postsElement).find(".post"); //.find("header");
   console.log(postHeaderElements);
   $(".posts-display").empty();
-  $(".posts-display").data("posts", data);
   $(".posts-display").append(postsElement);
+  $(".posts-display").on(
+    "click",
+    ".post .post-footer .post-delete",
+    handlePostDeletBtnClick
+  );
 };
 
 export const createPostElement = function ([enteryName, enteryValue]) {

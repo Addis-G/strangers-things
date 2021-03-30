@@ -13,7 +13,6 @@ export const generalFetch = async function (
 ) {
   try {
     let response;
-    console.log(token);
 
     if (method == "GET") {
       response = await fetch(API_BASE_URL + url, {
@@ -75,27 +74,29 @@ export async function register({ username, password }) {
         },
       }),
     });
-    const data = await response.json();
-    return data;
+    return response;
   } catch (error) {
     console.log(error);
   }
 }
+
 export const fetchPosts = async function () {
   try {
-    const response = await generalFetch(
+    const { data } = await generalFetch(
       "/posts",
       "GET",
       "",
       "Bearer " + localStorage.getItem("token"),
       "user"
     );
-
-    renderPosts(response);
+    //debugger;
+    window.app_state.posts = [...data.posts];
+    renderPosts(window.app_state);
   } catch (error) {
     console.log(error);
   }
 };
+
 export const createPost = async function (body) {
   try {
     const response = await generalFetch(
@@ -105,7 +106,7 @@ export const createPost = async function (body) {
       "Bearer " + localStorage.getItem("token"),
       "post"
     );
-    console.log(response);
+
     return response;
   } catch (error) {
     console.log(error);
@@ -117,6 +118,21 @@ export const testMe = async (token) => {
     const response = await fetch(API_BASE_URL + "/test/me", {
       headers: { Authorization: "Bearer " + token },
     });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deletePost = async function (postId) {
+  try {
+    const response = await generalFetch(
+      "/posts/" + postId,
+      "DELETE",
+      "",
+      "Bearer " + localStorage.getItem("token"),
+      ""
+    );
     return response;
   } catch (error) {
     console.log(error);

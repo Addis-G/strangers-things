@@ -8,6 +8,7 @@ import {
   handleNavLinksClick,
   handleLogOutLinkClick,
   handlePostBtnClick,
+  handlePostDeletBtnClick,
 } from "./handlers.js";
 
 window.app_state = { userName: null, posts: null };
@@ -29,6 +30,5 @@ $(".register-btn").click(handleRegisterButtonClick);
 $(".login-btn").click(handleLoginButtonClick);
 $(".logout-link").click(handleLogOutLinkClick);
 $(".submit-post-btn").click(handlePostBtnClick);
-
 udpateLoginButtons();
 fetchPosts();
