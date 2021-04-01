@@ -89,7 +89,7 @@ export const fetchPosts = async function () {
       "Bearer " + localStorage.getItem("token"),
       "user"
     );
-    //debugger;
+
     window.app_state.posts = [...data.posts];
     renderPosts(window.app_state);
   } catch (error) {
@@ -133,6 +133,24 @@ export const deletePost = async function (postId) {
       "Bearer " + localStorage.getItem("token"),
       ""
     );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const createMessage = async function (post_id, message) {
+  try {
+    const response = await generalFetch(
+      "/posts/" + post_id + "/messages",
+      "POST",
+      JSON.stringify({
+        message: { content: message },
+      }),
+      "Bearer " + localStorage.getItem("token"),
+      ""
+    );
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);

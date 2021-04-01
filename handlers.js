@@ -4,8 +4,10 @@ import {
   logIn,
   testMe,
   deletePost,
+  createMessage,
+  fetchPosts,
 } from "./api_calls.js";
-import { renderPosts } from "./renderers.js";
+import { renderPosts, renderMessages } from "./renderers.js";
 import { isLoggedIn } from "./helpers.js";
 
 export const handleCloseButtonClick = function () {
@@ -78,7 +80,11 @@ export const handleLoginButtonClick = async function (e) {
         "green-result-notification"
       );
       window.app_state.userName = $("#login-user-id").val();
+      //debugger;
+
       udpateLoginButtons();
+      fetchPosts();
+      renderAvatar();
 
       return;
     } else {
@@ -109,6 +115,7 @@ const renderAvatar = async function () {
     try {
       const response = await testMe(token);
       const { data } = await response.json();
+      $(".avatar h3").text("Welcome " + data.user.username + "!");
       getAvatar(data.user.username);
     } catch (error) {
       console.log(error);
@@ -148,7 +155,10 @@ export const handleNavLinksClick = function (e) {
 export const handleLogOutLinkClick = async function () {
   const token = await localStorage.getItem("token");
   if (token !== null) localStorage.removeItem("token");
+  delete window.app_state.userName;
   udpateLoginButtons();
+  $(".avatar h3").text("");
+  fetchPosts();
 };
 
 export const handlePostBtnClick = async function (e) {
@@ -187,7 +197,6 @@ export const udpateLoginButtons = async function () {
     $(".register-link").attr("disabled", true);
     $(".login-link").attr("disabled", true);
     $(".logout-link ").attr("disabled", false);
-    renderAvatar();
   } else {
     $(".register-link").attr("disabled", false);
     $(".login-link").attr("disabled", false);
@@ -212,4 +221,55 @@ export const handlePostDeletBtnClick = async function () {
   } catch (error) {
     console.log(error);
   }
+};
+
+export const handleMessageIconClick = async function () {
+  //debugger;
+  const msgInputElement = $(this)
+    .closest(".post-footer")
+    .find(".message-input");
+  //debugger;
+  if (Array.from(msgInputElement).length == 1) return;
+  const postFooterElement = $(this).closest(".post-footer");
+
+  postFooterElement.append(
+    `<span class='message-input' contenteditable='true'><span>`
+  );
+
+  $(".posts-display").on(
+    "keypress",
+    ".post .post-footer .message-input",
+    handleMessageBoxKeyPress
+  );
+  $(".posts-display").on(
+    "focusout",
+    ".post .post-footer .message-input",
+    handleMessageBoxBlur
+  );
+};
+
+const handleMessageBoxKeyPress = async function (e) {
+  const post_id = $(this).closest(".post").data("post_id");
+  const messageText = $(this).text();
+  try {
+    if (e.which == 13 && messageText !== "") {
+      const response = await createMessage(post_id, $(this).text());
+      if (response.success == true) $(this).text("message Sent successfully!");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const handleMessageBoxBlur = function (e) {
+  $(this).remove();
+};
+
+export const handleMessageCountLinkClick = function (e) {
+  e.preventDefault();
+  const post_id = $(this).closest(".post").data("post_id");
+  const post = window.app_state.posts.filter((post) => post._id == post_id);
+  renderMessages(post);
+  console.log(post);
+  console.log($(this).closest(".post").data("post_id"));
 };
