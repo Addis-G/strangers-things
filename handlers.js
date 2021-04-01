@@ -269,7 +269,10 @@ export const handleMessageCountLinkClick = function (e) {
   e.preventDefault();
   const post_id = $(this).closest(".post").data("post_id");
   const post = window.app_state.posts.filter((post) => post._id == post_id);
-  renderMessages(post);
-  console.log(post);
+  //debugger;
+  console.log([...post[0].messages]);
+  console.log(renderMessages(post[0].messages).html());
+  $(".main").append(renderMessages(post[0].messages));
+
   console.log($(this).closest(".post").data("post_id"));
 };

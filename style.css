@@ -282,3 +282,25 @@ aside {
   border-radius: 5px;
   font-size: 16px;
 }
+.message-box {
+  position: fixed;
+  display: flex;
+  flex-flow: column wrap;
+  background-color: lightslategray;
+  width: 20%;
+  height: max-content;
+  font-size: medium;
+  top: 15%;
+  left: 35%;
+  padding: 10px;
+  border: 1px solid silver;
+  box-shadow: 5px 5px 13px -1px rgba(0, 0, 0, 0.52);
+}
+.message-box:before {
+  font-family: "Material Icons";
+  content: "highlight_off";
+  font-size: 2rem;
+  right: -2px;
+  top: -8px;
+  position: absolute;
+}

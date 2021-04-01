@@ -89,11 +89,11 @@ const toTitleCase = (text) =>
     .splice(1, text.split("").length - 1)
     .join("");
 export const renderMessages = (messages) =>
-  $("<div></div>").append(
+  $("<div class='message-box'></div>").append(
     messages
       .map(
-        ({ content, fromuser, reatedat }) =>
-          `<span>From ${fromuser.username}</span><span>${createdat}</span>${content}<p></p>`
+        ({ content, fromUser: { username }, createdAt }) =>
+          `<span>From <strong>${username}</strong></span><span>${createdAt}</span><p>${content}</p>`
       )
-      .join()
+      .join("")
   );
