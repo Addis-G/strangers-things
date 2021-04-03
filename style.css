@@ -7,10 +7,13 @@
 label {
   cursor: default;
 }
-
+body {
+  position: relative;
+}
 .main {
   position: relative;
   width: 70%;
+
   margin: 70px auto 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -111,7 +114,7 @@ footer {
 .nav-bar {
   top: 0;
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 3fr 2fr 1fr;
   background-color: slategray;
   width: 70%;
   position: fixed;
@@ -161,19 +164,21 @@ footer {
   grid-column: 1/4;
   grid-row: 3/4;
   grid-template-columns: repeat(3, auto);
-  grid-template-rows: max-content;
+
   grid-gap: 10px;
   padding: 10px;
+  min-height: 400px;
 }
 .post {
   display: flex;
   flex-flow: row wrap;
-  height: max-content;
+  /* height: max-content; */
   border: 1px solid slategray;
   border-radius: 10px;
-
   overflow: hidden;
   box-shadow: 2px 2px 2px -1px rgba(0, 0, 0, 0.52);
+  justify-self: stretch;
+  align-self: stretch;
 }
 .post span {
   display: block;
@@ -185,6 +190,9 @@ footer {
 .post-header {
   color: white;
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .post-header,
 .post-footer {
@@ -244,7 +252,7 @@ aside {
   width: 100px;
   border-radius: 10px;
 }
-.message-box {
+/* .message-box {
   position: absolute;
   border-radius: 10px;
   display: flex;
@@ -252,7 +260,7 @@ aside {
   width: 300px;
   font-size: 12px;
   line-height: 1.34;
-}
+} */
 .message-icon {
   font-family: "Material Icons";
   color: white;
@@ -279,28 +287,174 @@ aside {
   margin: 0 auto;
   background-color: lightgrey;
   margin: 0 !important;
-  border-radius: 5px;
+  border-radius: 15px;
   font-size: 16px;
+  padding-left: 5px;
+}
+.message-modal {
+  top: 65px;
+  left: 0;
+  width: 85%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  margin: 0 auto;
+  backdrop-filter: blur(2px);
+  z-index: 3;
 }
 .message-box {
   position: fixed;
   display: flex;
-  flex-flow: column wrap;
-  background-color: lightslategray;
-  width: 20%;
-  height: max-content;
+  flex-flow: row wrap;
+  background-color: khaki;
+  width: 40%;
+  height: 600px;
   font-size: medium;
-  top: 15%;
+  top: 10%;
   left: 35%;
   padding: 10px;
   border: 1px solid silver;
+  border-radius: 10px;
   box-shadow: 5px 5px 13px -1px rgba(0, 0, 0, 0.52);
+  overflow: scroll;
 }
-.message-box:before {
+.modal-close {
   font-family: "Material Icons";
   content: "highlight_off";
   font-size: 2rem;
-  right: -2px;
-  top: -8px;
+  width: 32px;
+  height: 32px;
+  right: -10px;
+  top: -10px;
   position: absolute;
+  background-color: lavender;
+  border-radius: 50%;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.message-container {
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid grey;
+  box-shadow: 2px 2px 2px -1px rgba(0, 0, 0, 0.52);
+  width: 100%;
+}
+.notification-icon {
+  font-family: "Material Icons";
+  width: max-content !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  position: relative;
+  background-color: navy;
+  border-radius: 50%;
+  padding: 5px;
+  margin: 0 !important;
+}
+.notification-number {
+  position: relative;
+  height: max-content !important;
+  width: max-content !important;
+  font-size: 0.8rem;
+  right: 7px;
+  top: -12px;
+  text-align: center;
+  color: white;
+  border-radius: 50%;
+  background-color: red;
+  padding: 3px !important;
+  margin: 0 !important;
+  cursor: pointer;
+}
+
+.navigation-container {
+  grid-column: 1/-1;
+  display: flex;
+  justify-content: center;
+}
+.navigation {
+  font-family: "Material Icons";
+  padding: 10px;
+  font-size: 24px;
+  font-weight: bolder;
+  border-radius: 10px;
+  margin-left: 20px;
+  box-shadow: 3px 3px 5px -1px rgba(0, 0, 0, 0.52);
+  border: #0074d9 2px solid;
+  background-color: #0074d9;
+  color: white;
+}
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row nowrap;
+}
+.search-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: row nowrap;
+  width: 100%;
+}
+.search-form input[type="text"] {
+  padding: 2px;
+  height: 36px;
+  border-radius: 3px;
+  font-size: 1.2rem;
+  width: 100%;
+  background-color: whitesmoke;
+}
+
+.search-text-result {
+  position: relative;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+}
+.matching-ul {
+  position: absolute;
+  background-color: whitesmoke;
+  text-decoration: none;
+  list-style: none;
+  width: 100%;
+  top: 100%;
+  padding: 10px;
+  border-left: solid #0074d9 2px;
+  border-right: solid #0074d9 2px;
+  border-bottom: solid #0074d9 2px;
+  border-radius: 0 0 10px 10px;
+  cursor: pointer;
+}
+.matching-ul li {
+  padding: 5px;
+}
+.search-icon {
+  font-family: "Material Icons";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 5%;
+  font-size: 1rem;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.matching-ul li h6 {
+  display: inline-block;
+}
+
+.search-li:hover {
+  background-color: whitesmoke;
+  border: 1px solid lightgrey;
 }

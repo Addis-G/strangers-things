@@ -1,5 +1,4 @@
-import { logIn, generalFetch, fetchPosts } from "./api_calls.js";
-import { renderPosts } from "./renderers.js";
+import { fetchPosts } from "./api_calls.js";
 import { udpateLoginButtons } from "./handlers.js";
 import {
   handleLoginButtonClick,
@@ -8,7 +7,9 @@ import {
   handleNavLinksClick,
   handleLogOutLinkClick,
   handlePostBtnClick,
-  handlePostDeletBtnClick,
+  handleSearchTextFocusOut,
+  handleSearchTextInput,
+  handleSearchBtnClick,
 } from "./handlers.js";
 
 window.app_state = { userName: null, posts: null };
@@ -30,5 +31,16 @@ $(".register-btn").click(handleRegisterButtonClick);
 $(".login-btn").click(handleLoginButtonClick);
 $(".logout-link").click(handleLogOutLinkClick);
 $(".submit-post-btn").click(handlePostBtnClick);
+$(".search-bar").on(
+  "input",
+  `.search-form input[type="text"]`,
+  handleSearchTextInput
+);
+$(".search-bar").on(
+  "focusout",
+  `.search-form input[type="text"]`,
+  handleSearchTextFocusOut
+);
+$(".search-btn").click(handleSearchBtnClick);
 udpateLoginButtons();
 fetchPosts();

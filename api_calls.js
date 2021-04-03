@@ -29,7 +29,7 @@ export const generalFetch = async function (
       });
     }
     const data = await response.json();
-    console.log(data);
+    //console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -62,18 +62,17 @@ export const logIn = async function (body) {
 
 export async function register({ username, password }) {
   try {
-    const response = await fetch("/users/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
+    const response = await generalFetch(
+      "/users/register",
+      "POST",
+      JSON.stringify({
         user: {
           username,
           password,
         },
       }),
-    });
+      ""
+    );
     return response;
   } catch (error) {
     console.log(error);
@@ -91,6 +90,7 @@ export const fetchPosts = async function () {
     );
 
     window.app_state.posts = [...data.posts];
+    window.app_state.currentPage = 1;
     renderPosts(window.app_state);
   } catch (error) {
     console.log(error);

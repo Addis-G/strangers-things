@@ -7,8 +7,12 @@ import {
   createMessage,
   fetchPosts,
 } from "./api_calls.js";
-import { renderPosts, renderMessages } from "./renderers.js";
-import { isLoggedIn } from "./helpers.js";
+import {
+  renderPosts,
+  renderMessages,
+  renderMatchingTitles,
+} from "./renderers.js";
+import { getMatchingPosts, isLoggedIn } from "./helpers.js";
 
 export const handleCloseButtonClick = function () {
   clearRegistrationInputs();
@@ -43,6 +47,7 @@ export const handleRegisterButtonClick = async function (e) {
         "green-result-notification"
       );
     } else {
+      console.log(response);
       const { name, message } = response.error;
       notificationLoReg(
         message,
@@ -68,8 +73,8 @@ export const handleLoginButtonClick = async function (e) {
   const passWord = $("#login-user-password").val();
   try {
     const response = await logIn({
-      username: userName, //$("#login-user-id").val(),
-      password: passWord, //$("#login-user-password").val(),
+      username: userName,
+      password: passWord,
     });
     const { success, data, error } = response;
 
@@ -94,7 +99,6 @@ export const handleLoginButtonClick = async function (e) {
         "red-result-notification"
       );
     }
-    console.log(response);
   } catch (error) {
     console.log(error);
   }
@@ -138,11 +142,6 @@ const getAvatar = async (username) => {
 
 export const handleNavLinksClick = function (e) {
   e.preventDefault();
-  // const token = localStorage.getItem("token");
-  // if (token !== null) {
-  //   ()
-  //   return;
-  // }
   if ($(this).hasClass("login-link")) {
     $(".login-container").addClass("active");
     return;
@@ -162,14 +161,12 @@ export const handleLogOutLinkClick = async function () {
 };
 
 export const handlePostBtnClick = async function (e) {
-  //debugger;
   e.preventDefault();
   if (!isLoggedIn()) {
     $(".login-container").addClass("active");
     return;
   }
 
-  //debugger;
   const body = {
     title: $("#post-title").val(),
     description: $("#post-description").val(),
@@ -224,16 +221,21 @@ export const handlePostDeletBtnClick = async function () {
 };
 
 export const handleMessageIconClick = async function () {
-  //debugger;
   const msgInputElement = $(this)
     .closest(".post-footer")
     .find(".message-input");
-  //debugger;
+
   if (Array.from(msgInputElement).length == 1) return;
   const postFooterElement = $(this).closest(".post-footer");
 
   postFooterElement.append(
-    `<span class='message-input' contenteditable='true'><span>`
+    `<span class='message-input' ${
+      isLoggedIn() ? `contenteditable='true'` : ""
+    }>${
+      !isLoggedIn()
+        ? `Please Log In/Register to send a message to the poster`
+        : ""
+    }<span>`
   );
 
   $(".posts-display").on(
@@ -266,13 +268,47 @@ const handleMessageBoxBlur = function (e) {
 };
 
 export const handleMessageCountLinkClick = function (e) {
-  e.preventDefault();
   const post_id = $(this).closest(".post").data("post_id");
   const post = window.app_state.posts.filter((post) => post._id == post_id);
-  //debugger;
-  console.log([...post[0].messages]);
-  console.log(renderMessages(post[0].messages).html());
-  $(".main").append(renderMessages(post[0].messages));
+  $("body").append(renderMessages(post[0].messages));
+};
+export const handleModalCloseClick = function () {
+  $("body").find(".message-modal").remove();
+};
+export const handlePaginationNextClick = () => {
+  window.app_state.currentPage++;
+  if (window.app_state.searchText == "") {
+    renderPosts(window.app_state);
+  } else renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
+};
+export const handlePaginationPrevClick = () => {
+  window.app_state.currentPage--;
+  if (window.app_state.searchText == "") {
+    renderPosts(window.app_state);
+  } else renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
+};
 
-  console.log($(this).closest(".post").data("post_id"));
+export const handleSearchTextInput = (e) => {
+  const searchText = $(".search-form").find(".search-text").val();
+  renderMatchingTitles(getMatchingPosts(searchText));
+};
+
+export const handleSearchTextFocusOut = (e) => {
+  // $(".matching-ul").remove();
+  //$(".search-text").val($(e.target).parent().data("title"));
+  //$(".matching-ul").remove();
+};
+
+export const handleMatchingItemClicked = (e) => {
+  $(".search-text").val($(e.target).parent().data("title"));
+  $(".matching-ul").remove();
+};
+
+export const handleSearchBtnClick = (e) => {
+  e.preventDefault();
+  window.app_state.currentPage = 1;
+  window.app_state.searchText = $(".search-text").val();
+  console.log(window.app_state.searchText);
+  renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
+  $(".matching-ul").remove();
 };
