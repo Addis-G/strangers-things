@@ -2,7 +2,6 @@ import {
   createPost,
   register,
   logIn,
-  testMe,
   deletePost,
   createMessage,
   fetchPosts,
@@ -24,16 +23,54 @@ export const handleCloseButtonClick = function () {
   if (openWindow.length == 1) {
     openWindow.removeClass("active");
     $(".registeration-result-notification").removeClass("active");
+    $("registeration-form").trigger("reset");
     return;
   } else {
     openWindow = $(this).closest(".login-container");
     openWindow.removeClass("active");
+    $(".login-form").trigger("reset");
   }
 };
 
 export const handleRegisterButtonClick = async function (e) {
   e.preventDefault();
-
+  if (
+    $("#register-user-id").val() == "" ||
+    $("#register-user-id").val().length < 5
+  ) {
+    notificationLoReg(
+      $("#register-user-id").val() == ""
+        ? "User Id is a required field"
+        : "User Id cannot be less than 5 characters",
+      $(".registration-container").find(".notification-span"),
+      "red-result-notification"
+    );
+    return;
+  }
+  if (
+    $("#register-login-password").val() == "" ||
+    $("#register-login-password").val().length < 5
+  ) {
+    notificationLoReg(
+      $("#register-login-password").val() == ""
+        ? "Password is a required field"
+        : "Password cannot be less than 5 characters",
+      $(".registration-container").find(".notification-span"),
+      "red-result-notification"
+    );
+    return;
+  } //
+  if (
+    $("#register-reenter-login-password").val() !==
+    $("#register-login-password").val()
+  ) {
+    notificationLoReg(
+      "Re-Entered password should match Password",
+      $(".registration-container").find(".notification-span"),
+      "red-result-notification"
+    );
+    return;
+  }
   let response;
   try {
     response = await register({
@@ -359,7 +396,6 @@ export const handleMyPostsClick = (e) => {
   if ($(".posts-display").hasClass("hidden"))
     $(".posts-display").removeClass("hidden");
   renderPosts(window.app_state.currentUser, 0);
-  //console.log(myPosts);
 };
 export const handleMyMsgClick = (e) => {
   e.preventDefault();

@@ -22,17 +22,18 @@
       ><button href="#" class="login-link ">Login</button
       ><button href="#" class="logout-link ">Logout</button></div>
       <div class='search-bar'> <form class="search-form"><span class='search-text-result'>
-        <input type="text" required class="search-text"></span><button class='search-btn'>search</button></form></div>
+        <input type="text" required class="search-text" min="5"></span><button class='search-btn'>search</button></form></div>
       <div class="avatar"><h3></h3><img class="img-avatar"></img></div>
     </div>
 
         <div class="login-container">
+          <form class='login-form'>
           <span class="close-button">
             <i class="material-icons">highlight_off</i></span>
           <header class="login-registration-header"><h2>Login</h2></header>
           <div></div>
           <label for="login-user-id">User Id:</label>
-          <input class="login-input" required type="text" name="" id="login-user-id" />
+          <input class="login-input" required type="text" name="" id="login-user-id" min="5"/>
           <label for="login-password">Password:</label>
           <input
             class="login-input"
@@ -40,8 +41,9 @@
             name=""
             id="login-user-password"
             required
+            min='5'
           />
-          <button class="login-btn">Login</button>
+          <button class="login-btn">Login</button></form>
           <span class="notification-span"></span>
         </div>
         <div class="registration-container">
@@ -49,28 +51,29 @@
             ><i class="material-icons">highlight_off</i></span
           >
           <header class="login-registration-header"><h2>Register</h2></header>
+          <form class='registeration-form'>
           <label for="register-user-id">User Id:</label>
-          <input type="text" required name="" id="register-user-id" />
+          <input type="text" required min='5' name="" id="register-user-id" />
           <label for="register-login-password">Password:</label>
-          <input type="password" required name="" id="register-login-password" />
+          <input type="password" required min='5' name="" id="register-login-password" />
           <label for="register-reenter-login-password">Re-enter Password:</label>
-          <input type="password" required name="" id="register-reenter-login-password" />
+          <input type="password" required min='5' name="" id="register-reenter-login-password" />
           <button class="register-btn">Register</button>
-          <span class="notification-span"></span>
+          <span class="notification-span"></span></form>
             </div>
     <div class="main">
       <aside>
         <form class='post-form' action="">
              <label>Title</label>
-                <input id="post-title"type="text">
+                <input id="post-title"type="text" required>
               <label>Description</label>
-                <textarea id='post-description' type="text" placeholder="Enter Description"></textarea>
+                <textarea id='post-description' type="text" placeholder="Enter Description" required></textarea>
               <label for="">Price</label>
-                <input type="text" id="post-price">
+                <input type="text" id="post-price" required>
               <label for="">location</label>
-              <input type="text" id='post-location'> 
+              <input type="text" id='post-location' required> 
           <label for="" >Will Deliver?</label>
-             <input type="checkbox" id='post-is-delivered'class='is-delivered-checkbox' checked>
+             <input type="checkbox" id='post-is-delivered'class='is-delivered-checkbox' unchecked>
           <button class="submit-post-btn">Post</button>
         </form>
          

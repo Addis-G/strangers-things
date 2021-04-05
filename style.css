@@ -53,36 +53,36 @@ body {
 }
 .registration-container .close-button,
 .login-container .close-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-family: "Material Icons";
   font-weight: bolder;
-  right: -8px;
-  top: -8px;
+  right: -15px !important;
+  top: -15px;
   position: absolute;
-  width: 16px;
-  height: 16px;
-  color: #0074d9;
+  width: 30px;
+  height: 30px;
+  background-color: #0074d9;
+  color: white;
   font-size: 1.5rem;
-  background-color: white;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   cursor: pointer;
-  justify-self: flex-end;
+  z-index: 10;
+  margin: 0 !important;
 }
 
-.login-container > *:not(.login-registration-header):not(label, .close-button),
-.registration-container
-  > *:not(.login-registration-header):not(label, .close-button) {
-  margin: 3px auto 10px auto;
+.login-form > *:not(.login-registration-header):not(label, .close-button),
+.registeration-form > * {
+  margin: 10px;
   padding: 10px;
   width: 90%;
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 1.2rem;
 }
-.login-container > label,
-.registration-container > label {
-  margin: 0 0 0px 5px;
+.login-form > label,
+.registeration-form > label {
+  margin: 0;
   width: 90%;
 }
 /* .login-input {
@@ -95,7 +95,7 @@ body {
   max-height: 5rem;
   display: flex;
   align-items: center;
-  padding: 0 0 0 5px;
+  padding: 10px;
 }
 
 .active {
@@ -524,7 +524,7 @@ aside {
 .mp-link:hover {
   text-decoration: underline;
 }
-.material-icons {
+.msg-click-icons {
   font-family: "Material Icons";
   display: block;
   width: 24px;
@@ -532,4 +532,10 @@ aside {
   position: relative;
   left: -10px;
   margin: 2px 5px;
+}
+
+.post-form input:invalid:required,
+.post-form input:invalid:required,
+.registeration-form input:invalid:required {
+  border-bottom: 3px solid red;
 }

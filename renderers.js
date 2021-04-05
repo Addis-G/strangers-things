@@ -46,7 +46,9 @@ export const renderPosts = function ({ posts }, paging = 1) {
       )
       .append(
         `<footer class="post-footer">${
-          post.isAuthor || post.author == window.app_state.currentUser._id
+          post.isAuthor ||
+          (!!window.app_state.currentUser &&
+            post.author == window.app_state.currentUser._id)
             ? `<span class='post-delete'>delete</span><span class='post-edit'>edit</span>`
             : `<span class='message-icon' >message</span>`
         }
@@ -199,7 +201,7 @@ export const renderLoggedInUserMessage = function () {
       (message) => message.post._id == post._id
     );
     incomingMessageGrpElement.append(
-      $(`<div class="post-m-list"><span class="material-icons">remove</span>
+      $(`<div class="post-m-list"><span class="msg-click-icons">remove</span>
           ${post.title} by ${post.author.username} <p>${post.description}</p> </div>`)
         .data("post_id", post._id)
         .data("click_status", 0)
@@ -233,7 +235,7 @@ export const renderLoggedInUserMessage = function () {
     );
     outGoingMessageGrpElement.append(
       $(
-        `<div class="post-m-list"><span class="material-icons">remove</span>
+        `<div class="post-m-list"><span class="msg-click-icons">remove</span>
     ${post.title} by ${post.author.username}
     <p>${post.description}</p>
   </div>`

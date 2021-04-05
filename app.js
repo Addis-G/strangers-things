@@ -29,8 +29,7 @@ async function bootStrapping() {
     await testMe();
     await usersMe();
     renderLoggedInUserMessage();
-    //await fetchPosts();
-    //renderPosts(window.app_state);
+
     $(".posts-display").addClass("hidden");
     $(".msg-post-option").removeClass("hidden");
     renderAvatar();
