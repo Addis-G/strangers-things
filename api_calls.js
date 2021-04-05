@@ -2,13 +2,7 @@ const API_BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-VPI-RM-WEB-PT";
 
 export let loginToken;
-export const generalFetch = async function (
-  url,
-  method,
-  body,
-  token,
-  createType
-) {
+export const generalFetch = async function (url, method, body, token) {
   try {
     let response;
 
@@ -39,8 +33,7 @@ export const logIn = async function (body) {
     "/users/login",
     "POST",
     JSON.stringify({ user: body }),
-    "",
-    "user"
+    ""
   );
 
   if (success) {
@@ -68,8 +61,7 @@ export async function register({ username, password }) {
           username,
           password,
         },
-      }),
-      ""
+      })
     );
     return response;
   } catch (error) {
@@ -83,8 +75,7 @@ export const fetchPosts = async function () {
       "/posts",
       "GET",
       "",
-      "Bearer " + localStorage.getItem("token"),
-      "user"
+      "Bearer " + localStorage.getItem("token")
     );
 
     window.app_state.posts = [...data.posts];
@@ -100,8 +91,7 @@ export const createPost = async function (body) {
       "/posts",
       "POST",
       JSON.stringify({ post: body }),
-      "Bearer " + localStorage.getItem("token"),
-      "post"
+      "Bearer " + localStorage.getItem("token")
     );
 
     return response;
@@ -129,8 +119,7 @@ export const usersMe = async () => {
       "/users/me",
       "GET",
       "",
-      "Bearer " + localStorage.getItem("token"),
-      ""
+      "Bearer " + localStorage.getItem("token")
     );
     const { data } = response;
     window.app_state.currentUser = data;
@@ -145,8 +134,7 @@ export const deletePost = async function (postId) {
       "/posts/" + postId,
       "DELETE",
       "",
-      "Bearer " + localStorage.getItem("token"),
-      ""
+      "Bearer " + localStorage.getItem("token")
     );
     return response;
   } catch (error) {
@@ -162,8 +150,7 @@ export const createMessage = async function (post_id, message) {
       JSON.stringify({
         message: { content: message },
       }),
-      "Bearer " + localStorage.getItem("token"),
-      ""
+      "Bearer " + localStorage.getItem("token")
     );
     console.log(response);
     return response;

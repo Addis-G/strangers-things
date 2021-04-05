@@ -245,8 +245,6 @@ export const renderLoggedInUserMessage = function () {
     );
   });
 
-  //debugger;
-
   $(".loggedIn-posts-display").append(incomingMessageGrpElement);
 
   $(".loggedIn-posts-display").append(outGoingMessageGrpElement);

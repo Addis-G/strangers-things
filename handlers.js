@@ -72,7 +72,7 @@ export const handleLoginButtonClick = async function (e) {
     await renderAvatar();
     return;
   }
-  //debugger;
+
   const userName = $("#login-user-id").val();
   const passWord = $("#login-user-password").val();
   try {
@@ -338,7 +338,7 @@ export const handleIncomingMessagePostClick = (e) => {
 
 export const handleMyPostsClick = (e) => {
   e.preventDefault();
-  // debugger;
+
   // const myPosts = window.app_state.posts.filter((p) =>
   //   window.app_state.currentUser.posts.some((myp) => myp.posts._id == p._id)
   // );
