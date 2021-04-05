@@ -24,12 +24,14 @@ export const handleCloseButtonClick = function () {
     openWindow.removeClass("active");
     $(".registeration-result-notification").removeClass("active");
     $("registeration-form").trigger("reset");
+    $(".notification-span").text("");
     return;
   } else {
     openWindow = $(this).closest(".login-container");
     openWindow.removeClass("active");
     $(".login-form").trigger("reset");
   }
+  $(".notification-span").text("");
 };
 
 export const handleRegisterButtonClick = async function (e) {
