@@ -6,11 +6,14 @@ import {
   deletePost,
   createMessage,
   fetchPosts,
+  usersMe,
 } from "./api_calls.js";
 import {
   renderPosts,
   renderMessages,
   renderMatchingTitles,
+  renderLoggedInUserMessage,
+  renderAvatar,
 } from "./renderers.js";
 import { getMatchingPosts, isLoggedIn } from "./helpers.js";
 
@@ -66,9 +69,10 @@ export const handleLoginButtonClick = async function (e) {
   e.preventDefault();
   const token = localStorage.getItem("token");
   if (token !== null) {
-    renderAvatar();
+    await renderAvatar();
     return;
   }
+  //debugger;
   const userName = $("#login-user-id").val();
   const passWord = $("#login-user-password").val();
   try {
@@ -85,13 +89,15 @@ export const handleLoginButtonClick = async function (e) {
         "green-result-notification"
       );
       window.app_state.userName = $("#login-user-id").val();
-      //debugger;
 
       udpateLoginButtons();
-      fetchPosts();
+      await usersMe();
+      renderLoggedInUserMessage();
+      await fetchPosts();
+      renderPosts(window.app_state);
       renderAvatar();
-
-      return;
+      $(".posts-display").addClass("hidden");
+      $(".msg-post-option").removeClass("hidden");
     } else {
       notificationLoReg(
         error.message,
@@ -112,34 +118,6 @@ const clearRegistrationInputs = function () {
   }
 };
 
-const renderAvatar = async function () {
-  if (window.app_state.userName == null) {
-    const token = localStorage.getItem("token");
-    if (token == null) return;
-    try {
-      const response = await testMe(token);
-      const { data } = await response.json();
-      $(".avatar h3").text("Welcome " + data.user.username + "!");
-      getAvatar(data.user.username);
-    } catch (error) {
-      console.log(error);
-    }
-  } else {
-    getAvatar(window.app_state.userName);
-  }
-};
-const getAvatar = async (username) => {
-  try {
-    const { url } = await fetch(
-      `https://avatars.dicebear.com/api/avataaars/${username}.svg`
-    );
-    $(".img-avatar").attr("src", url);
-    $(".img-avatar").addClass("active");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 export const handleNavLinksClick = function (e) {
   e.preventDefault();
   if ($(this).hasClass("login-link")) {
@@ -157,7 +135,13 @@ export const handleLogOutLinkClick = async function () {
   delete window.app_state.userName;
   udpateLoginButtons();
   $(".avatar h3").text("");
-  fetchPosts();
+  $(".posts-display").empty();
+  $(".msg-post-option").addClass("hidden");
+  $(".message-group-incoming").empty();
+  $(".message-group-outgoing").empty();
+  await fetchPosts();
+  renderPosts(window.app_state, 0);
+  $(".posts-display").removeClass("hidden");
 };
 
 export const handlePostBtnClick = async function (e) {
@@ -276,14 +260,16 @@ export const handleModalCloseClick = function () {
   $("body").find(".message-modal").remove();
 };
 export const handlePaginationNextClick = () => {
+  if (window.app_state.currentPage + 1 > window.app_state.posts.length / 9)
+    return;
   window.app_state.currentPage++;
-  if (window.app_state.searchText == "") {
+  if (!window.app_state.searchText) {
     renderPosts(window.app_state);
   } else renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
 };
 export const handlePaginationPrevClick = () => {
   window.app_state.currentPage--;
-  if (window.app_state.searchText == "") {
+  if (!window.app_state.searchText) {
     renderPosts(window.app_state);
   } else renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
 };
@@ -308,7 +294,58 @@ export const handleSearchBtnClick = (e) => {
   e.preventDefault();
   window.app_state.currentPage = 1;
   window.app_state.searchText = $(".search-text").val();
-  console.log(window.app_state.searchText);
   renderPosts({ posts: getMatchingPosts(window.app_state.searchText) });
   $(".matching-ul").remove();
+};
+
+export const handleMessagePostClick = (e) => {
+  if ($(e.target).data("post_id") == undefined) return;
+  const nl = $(".message-group-outgoing").children(); //find(".message-lists");
+  Array.from($(nl)).forEach((mList) => {
+    if (
+      $(mList).data("post_id") == $(e.target).data("post_id") &&
+      !$(mList).hasClass("post-m-list")
+    )
+      $(mList).toggleClass("hidden");
+  });
+};
+
+export const handleIncomingMessagePostClick = (e) => {
+  if ($(e.target).data("post_id") == undefined) return;
+  const nl = $(".message-group-incoming").children(); //find(".message-lists");
+  Array.from($(nl)).forEach((mList) => {
+    if (
+      $(mList).data("post_id") == $(e.target).data("post_id") &&
+      !$(mList).hasClass("post-m-list")
+    )
+      $(mList).toggleClass("hidden");
+  });
+};
+
+export const handleMyPostsClick = (e) => {
+  e.preventDefault();
+  // debugger;
+  // const myPosts = window.app_state.posts.filter((p) =>
+  //   window.app_state.currentUser.posts.some((myp) => myp.posts._id == p._id)
+  // );
+  window.app_state.currentView = 1; //posts
+  $(".message-group-incoming").addClass("hidden");
+  $(".message-group-outgoing").addClass("hidden");
+  if ($(".posts-display").hasClass("hidden"))
+    $(".posts-display").removeClass("hidden");
+  renderPosts(window.app_state.currentUser, 0);
+  //console.log(myPosts);
+};
+export const handleMyMsgClick = (e) => {
+  e.preventDefault();
+  $(".message-group-incoming").removeClass("hidden");
+  $(".message-group-outgoing").removeClass("hidden");
+  $(".posts-display").addClass("hidden");
+  //console.log("Hello There");
+};
+export const handleAllPostsClick = (e) => {
+  $(".message-group-incoming").addClass("hidden");
+  $(".message-group-outgoing").addClass("hidden");
+  $(".posts-display").removeClass("hidden");
+  renderPosts(window.app_state, 0);
 };

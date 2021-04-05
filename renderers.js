@@ -6,15 +6,24 @@ import {
   handlePaginationNextClick,
   handlePaginationPrevClick,
   handleMatchingItemClicked,
+  handleMessagePostClick,
+  handleIncomingMessagePostClick,
 } from "./handlers.js";
 
-export const renderPosts = function ({ posts }) {
-  const startRecordIndex = window.app_state.currentPage * 9 - 9;
-  const lastRecordIndex = window.app_state.currentPage * 9;
-  const currentPagePosts = posts.filter((post, index) =>
-    index >= startRecordIndex && index < lastRecordIndex ? post : ""
-  );
+import { testMe } from "./api_calls.js";
+export const renderPosts = function ({ posts }, paging = 1) {
+  let currentPagePosts;
+  if (paging == 1) {
+    const startRecordIndex = window.app_state.currentPage * 9 - 9;
+    const lastRecordIndex = window.app_state.currentPage * 9;
+    currentPagePosts = posts.filter((post, index) =>
+      index >= startRecordIndex && index < lastRecordIndex ? post : ""
+    );
+  }
 
+  if (paging == 0) {
+    currentPagePosts = [...posts];
+  }
   const postsElement = currentPagePosts.map((post) =>
     $(`<div class='post'></div>`)
       .append(
@@ -61,7 +70,8 @@ export const renderPosts = function ({ posts }) {
     ".post .post-header .notification-number",
     handleMessageCountLinkClick
   );
-  $(".posts-display").append(renderPaging);
+  $(".main").find(".navigation-container").empty();
+  if (paging == 1) $(".main").append(renderPaging);
 };
 
 export const createPostElement = function ([enteryName, enteryValue]) {
@@ -158,4 +168,112 @@ export const renderMatchingTitles = (matchingPosts) => {
   ul.click(handleMatchingItemClicked);
 
   $(".search-text-result").append(ul);
+};
+
+export const renderLoggedInUserMessage = function () {
+  $(".loggedIn-posts-display").find(".message-group-incoming").remove();
+  $(".loggedIn-posts-display").find(".message-group-outgoing").remove();
+  const { messages } = window.app_state.currentUser;
+
+  const incominMessages = messages.filter(({ fromUser }) => {
+    console.log(window.app_state.userName);
+    return fromUser.username !== window.app_state.userName;
+  });
+
+  const currentUserPosts = window.app_state.posts.filter(
+    (post) => post.author.username == window.app_state.userName
+  );
+
+  const incomingMessageGrpElement = $(
+    `<div class='message-group-incoming'><h4>Inbox(${incominMessages.length})</h4></div>`
+  );
+
+  currentUserPosts.map((post) => {
+    const messagesToUser = messages.filter(
+      (message) => message.post._id == post._id
+    );
+    incomingMessageGrpElement.append(
+      $(`<div class="post-m-list">
+          ${post.title} by ${post.author.username} <p>${post.description}</p> </div>`)
+        .data("post_id", post._id)
+        .click(handleIncomingMessagePostClick)
+    );
+
+    messagesToUser.forEach((mtu) => {
+      incomingMessageGrpElement.append(
+        $(
+          `<div class="message-lists"> From ${mtu.fromUser.username}<p>${mtu.content}</p></div>`
+        ).data("post_id", post._id)
+      );
+    });
+  });
+
+  const outGoingMessages = messages.filter(
+    ({ fromUser }) => fromUser.username == window.app_state.userName
+  );
+
+  const postsCurrentUserSentMsgOn = window.app_state.posts.filter((post) =>
+    outGoingMessages.some((op) => op.post._id == post._id)
+  );
+
+  const outGoingMessageGrpElement = $(
+    `<div class='message-group-outgoing'><h4>Sent(${outGoingMessages.length})</h4></div>`
+  );
+
+  postsCurrentUserSentMsgOn.forEach((post) => {
+    const postsMessages = outGoingMessages.filter(
+      (m) => m.post._id == post._id
+    );
+    outGoingMessageGrpElement.append(
+      $(
+        `<div class="post-m-list">
+    ${post.title} by ${post.author.username}
+    <p>${post.description}</p>
+  </div>`
+      )
+        .data("post_id", post._id)
+        .click(handleMessagePostClick)
+    );
+    postsMessages.forEach((m) =>
+      outGoingMessageGrpElement.append(
+        $(
+          `<div class="message-lists"> From ${m.fromUser.username}<p>${m.content}</p></div>`
+        ).data("post_id", post._id)
+      )
+    );
+  });
+
+  //debugger;
+
+  $(".loggedIn-posts-display").append(incomingMessageGrpElement);
+
+  $(".loggedIn-posts-display").append(outGoingMessageGrpElement);
+};
+
+export const renderAvatar = async function () {
+  if (window.app_state.userName == null) {
+    const token = localStorage.getItem("token");
+    if (token == null) return;
+    try {
+      const response = await testMe(token);
+      const { data } = await response.json();
+      $(".avatar h3").text("Welcome " + data.user.username + "!");
+      getAvatar(data.user.username);
+    } catch (error) {
+      console.log(error);
+    }
+  } else {
+    getAvatar(window.app_state.userName);
+  }
+};
+const getAvatar = async (username) => {
+  try {
+    const { url } = await fetch(
+      `https://avatars.dicebear.com/api/avataaars/${username}.svg`
+    );
+    $(".img-avatar").attr("src", url);
+    $(".img-avatar").addClass("active");
+  } catch (error) {
+    console.log(error);
+  }
 };

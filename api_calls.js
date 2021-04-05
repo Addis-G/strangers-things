@@ -1,5 +1,3 @@
-import { renderPosts } from "./renderers.js";
-
 const API_BASE_URL =
   "https://strangers-things.herokuapp.com/api/2101-VPI-RM-WEB-PT";
 
@@ -47,7 +45,7 @@ export const logIn = async function (body) {
 
   if (success) {
     const { token, message } = data;
-    console.log(data);
+
     loginToken = token;
     localStorage.setItem("token", token);
     return {
@@ -91,7 +89,6 @@ export const fetchPosts = async function () {
 
     window.app_state.posts = [...data.posts];
     window.app_state.currentPage = 1;
-    renderPosts(window.app_state);
   } catch (error) {
     console.log(error);
   }
@@ -113,12 +110,30 @@ export const createPost = async function (body) {
   }
 };
 
-export const testMe = async (token) => {
+export const testMe = async () => {
   try {
     const response = await fetch(API_BASE_URL + "/test/me", {
-      headers: { Authorization: "Bearer " + token },
+      headers: { Authorization: "Bearer " + localStorage.getItem("token") },
     });
-    return response;
+    const { data } = await response.json();
+    window.app_state.userName = data.user.username;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const usersMe = async () => {
+  try {
+    const response = await generalFetch(
+      "/users/me",
+      "GET",
+      "",
+      "Bearer " + localStorage.getItem("token"),
+      ""
+    );
+    const { data } = response;
+    window.app_state.currentUser = data;
   } catch (error) {
     console.log(error);
   }

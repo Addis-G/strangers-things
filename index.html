@@ -22,7 +22,7 @@
       ><button href="#" class="login-link ">Login</button
       ><button href="#" class="logout-link ">Logout</button></div>
       <div class='search-bar'> <form class="search-form"><span class='search-text-result'>
-        <input type="text" class="search-text"></span><button class='search-btn'>search</button></form></div>
+        <input type="text" required class="search-text"></span><button class='search-btn'>search</button></form></div>
       <div class="avatar"><h3></h3><img class="img-avatar"></img></div>
     </div>
 
@@ -32,13 +32,14 @@
           <header class="login-registration-header"><h2>Login</h2></header>
           <div></div>
           <label for="login-user-id">User Id:</label>
-          <input class="login-input" type="text" name="" id="login-user-id" />
+          <input class="login-input" required type="text" name="" id="login-user-id" />
           <label for="login-password">Password:</label>
           <input
             class="login-input"
             type="password"
             name=""
             id="login-user-password"
+            required
           />
           <button class="login-btn">Login</button>
           <span class="notification-span"></span>
@@ -49,11 +50,11 @@
           >
           <header class="login-registration-header"><h2>Register</h2></header>
           <label for="register-user-id">User Id:</label>
-          <input type="text" name="" id="register-user-id" />
+          <input type="text" required name="" id="register-user-id" />
           <label for="register-login-password">Password:</label>
-          <input type="password" name="" id="register-login-password" />
+          <input type="password" required name="" id="register-login-password" />
           <label for="register-reenter-login-password">Re-enter Password:</label>
-          <input type="password" name="" id="register-reenter-login-password" />
+          <input type="password" required name="" id="register-reenter-login-password" />
           <button class="register-btn">Register</button>
           <span class="notification-span"></span>
             </div>
@@ -75,7 +76,12 @@
          
       </aside>
         
-        <div class="posts-display"></div>
+        
+        <div class="loggedIn-posts-display"><div class='msg-post-option'>
+          <a href='#' id="my-messages" class="mp-link my-messages">My Messages</a>
+          <a href="#" id="my-posts" class="mp-link my-posts">My Posts</a>
+          <a href="#" id="all-posts" class="mp-link my-posts">ALL Posts</a></div>
+          <div class="posts-display"></div></div>
        
   
       <footer></footer>
