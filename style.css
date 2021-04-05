@@ -500,6 +500,10 @@ aside {
 .post-m-list {
   cursor: pointer;
   background-color: lavender;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+  align-items: center;
 }
 .msg-post-option {
   display: flex;
@@ -517,4 +521,13 @@ aside {
 }
 .mp-link:hover {
   text-decoration: underline;
+}
+.material-icons {
+  font-family: "Material Icons";
+  display: block;
+  width: 24px;
+  height: 100%;
+  position: relative;
+  left: -10px;
+  margin: 2px 5px;
 }

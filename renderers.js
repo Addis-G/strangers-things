@@ -193,9 +193,10 @@ export const renderLoggedInUserMessage = function () {
       (message) => message.post._id == post._id
     );
     incomingMessageGrpElement.append(
-      $(`<div class="post-m-list">
+      $(`<div class="post-m-list"><span class="material-icons">remove</span>
           ${post.title} by ${post.author.username} <p>${post.description}</p> </div>`)
         .data("post_id", post._id)
+        .data("click_status", 0)
         .click(handleIncomingMessagePostClick)
     );
 
@@ -226,12 +227,13 @@ export const renderLoggedInUserMessage = function () {
     );
     outGoingMessageGrpElement.append(
       $(
-        `<div class="post-m-list">
+        `<div class="post-m-list"><span class="material-icons">remove</span>
     ${post.title} by ${post.author.username}
     <p>${post.description}</p>
   </div>`
       )
         .data("post_id", post._id)
+        .data("click_status", 0)
         .click(handleMessagePostClick)
     );
     postsMessages.forEach((m) =>

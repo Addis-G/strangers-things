@@ -308,6 +308,13 @@ export const handleMessagePostClick = (e) => {
     )
       $(mList).toggleClass("hidden");
   });
+  if ($(e.target).data("click_status") == 0) {
+    $(e.target).data("click_status", 1);
+    $(e.target).find(".material-icons").text("add");
+  } else {
+    $(e.target).data("click_status", 0);
+    $(e.target).find(".material-icons").text("remove");
+  }
 };
 
 export const handleIncomingMessagePostClick = (e) => {
@@ -320,6 +327,13 @@ export const handleIncomingMessagePostClick = (e) => {
     )
       $(mList).toggleClass("hidden");
   });
+  if ($(e.target).data("click_status") == 0) {
+    $(e.target).data("click_status", 1);
+    $(e.target).find(".material-icons").text("add");
+  } else {
+    $(e.target).data("click_status", 0);
+    $(e.target).find(".material-icons").text("remove");
+  }
 };
 
 export const handleMyPostsClick = (e) => {
