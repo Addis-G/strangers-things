@@ -7,6 +7,7 @@ import {
   createMessage,
   fetchPosts,
   usersMe,
+  updatePost,
 } from "./api_calls.js";
 import {
   renderPosts,
@@ -159,9 +160,19 @@ export const handlePostBtnClick = async function (e) {
     willDeliver: $("#post-is-delivered").is(":checked") ? true : false,
   };
   try {
-    const { data } = await createPost(body);
-    window.app_state.posts.push(data.post);
-    renderPosts(window.app_state);
+    let response;
+    if ($(".post-form").data("Operation") == "Update") {
+      response = await updatePost($(".post-form").data("post_id"), body);
+    } else {
+      response = await createPost(body);
+    }
+
+    const { data } = response;
+    if ($(".post-form").data("Operation") !== "Update")
+      window.app_state.posts.push(data.post);
+    if ($(".post-form").data("Operation") !== "Update")
+      renderPosts(window.app_state);
+    else renderPosts(window.app_state.currentUser);
     $(".post-form").trigger("reset");
   } catch (error) {
     console.log(error);
@@ -319,7 +330,7 @@ export const handleMessagePostClick = (e) => {
 
 export const handleIncomingMessagePostClick = (e) => {
   if ($(e.target).data("post_id") == undefined) return;
-  const nl = $(".message-group-incoming").children(); //find(".message-lists");
+  const nl = $(".message-group-incoming").children();
   Array.from($(nl)).forEach((mList) => {
     if (
       $(mList).data("post_id") == $(e.target).data("post_id") &&
@@ -339,9 +350,6 @@ export const handleIncomingMessagePostClick = (e) => {
 export const handleMyPostsClick = (e) => {
   e.preventDefault();
 
-  // const myPosts = window.app_state.posts.filter((p) =>
-  //   window.app_state.currentUser.posts.some((myp) => myp.posts._id == p._id)
-  // );
   window.app_state.currentView = 1; //posts
   $(".message-group-incoming").addClass("hidden");
   $(".message-group-outgoing").addClass("hidden");
@@ -355,11 +363,24 @@ export const handleMyMsgClick = (e) => {
   $(".message-group-incoming").removeClass("hidden");
   $(".message-group-outgoing").removeClass("hidden");
   $(".posts-display").addClass("hidden");
-  //console.log("Hello There");
 };
 export const handleAllPostsClick = (e) => {
   $(".message-group-incoming").addClass("hidden");
   $(".message-group-outgoing").addClass("hidden");
   $(".posts-display").removeClass("hidden");
   renderPosts(window.app_state, 0);
+};
+
+export const handlePostEditBtnClick = (e) => {
+  const post_id = $(e.target).closest(".post").data("post_id");
+  const [post] = window.app_state.posts.filter((p) => p._id == post_id);
+  if (!post.active) return;
+  $("#post-title").val(post.title);
+  $("#post-price").val(post.price);
+  $("#post-description").val(post.description);
+  $("#post-location").val(post.location);
+  $("#post-is-delivered").attr("isChecked", post.willDeliver);
+  $(".submit-post-btn").text("Save");
+  $(".post-form").data("Operation", "Update");
+  $(".post-form").data("post_id", post_id);
 };

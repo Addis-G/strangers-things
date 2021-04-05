@@ -8,6 +8,7 @@ import {
   handleMatchingItemClicked,
   handleMessagePostClick,
   handleIncomingMessagePostClick,
+  handlePostEditBtnClick,
 } from "./handlers.js";
 
 import { testMe } from "./api_calls.js";
@@ -24,6 +25,7 @@ export const renderPosts = function ({ posts }, paging = 1) {
   if (paging == 0) {
     currentPagePosts = [...posts];
   }
+
   const postsElement = currentPagePosts.map((post) =>
     $(`<div class='post'></div>`)
       .append(
@@ -44,20 +46,24 @@ export const renderPosts = function ({ posts }, paging = 1) {
       )
       .append(
         `<footer class="post-footer">${
-          post.isAuthor
-            ? `<span class='post-delete'>delete</span>`
+          post.isAuthor || post.author == window.app_state.currentUser._id
+            ? `<span class='post-delete'>delete</span><span class='post-edit'>edit</span>`
             : `<span class='message-icon' >message</span>`
         }
         </footer>`
       )
   );
-
   $(".posts-display").empty();
   $(".posts-display").append(postsElement);
   $(".posts-display").on(
     "click",
     ".post .post-footer .post-delete",
     handlePostDeletBtnClick
+  );
+  $(".posts-display").on(
+    "click",
+    ".post .post-footer .post-edit",
+    handlePostEditBtnClick
   );
   $(".posts-display").on(
     "click",

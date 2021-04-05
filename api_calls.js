@@ -158,3 +158,18 @@ export const createMessage = async function (post_id, message) {
     console.log(error);
   }
 };
+
+export const updatePost = async function (post_id, body) {
+  try {
+    const response = await generalFetch(
+      `/posts/${post_id}`,
+      "PATCH",
+      JSON.stringify({ post: body }),
+      "Bearer " + localStorage.getItem("token")
+    );
+
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};

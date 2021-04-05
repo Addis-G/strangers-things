@@ -270,13 +270,15 @@ aside {
   margin: 0 auto !important;
   cursor: pointer;
 }
-.post-delete {
+.post-delete,
+.post-edit {
   font-family: "Material Icons";
   color: white;
   font-size: 1.5rem;
   width: max-content !important;
   margin: 0 auto !important;
   cursor: pointer;
+  width: 30px;
 }
 
 .message-input {
