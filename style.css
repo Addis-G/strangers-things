@@ -508,6 +508,9 @@ aside {
   justify-content: flex-start;
   align-items: center;
 }
+.post-m-list {
+  width: 100%;
+}
 .msg-post-option {
   display: flex;
   justify-content: center;
@@ -539,4 +542,31 @@ aside {
 .post-form input:invalid:required,
 .registeration-form input:invalid:required {
   border-bottom: 3px solid red;
+}
+.loading-material-icons-outlined {
+  font-family: "Material Icons";
+  font-size: 5rem;
+  -webkit-animation: example 100s linear 0 infinite;
+  animation: example 100s linear 0 infinite;
+}
+
+@keyframes example {
+  0% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(72deg);
+  }
+  40% {
+    transform: rotate(144deg);
+  }
+  60% {
+    transform: rotate(216deg);
+  }
+  80% {
+    transform: rotate(288deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

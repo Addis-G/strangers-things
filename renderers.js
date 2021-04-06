@@ -236,14 +236,15 @@ export const renderLoggedInUserMessage = function () {
     outGoingMessageGrpElement.append(
       $(
         `<div class="post-m-list"><span class="msg-click-icons">remove</span>
-    ${post.title} by ${post.author.username}
-    <p>${post.description}</p>
+   <div><h5>${post.title} by ${post.author.username}</h5>
+    <p>${post.description}</p></div>
   </div>`
       )
         .data("post_id", post._id)
         .data("click_status", 0)
         .click(handleMessagePostClick)
     );
+
     postsMessages.forEach((m) =>
       outGoingMessageGrpElement.append(
         $(

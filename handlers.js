@@ -363,10 +363,10 @@ export const handleMessagePostClick = (e) => {
   });
   if ($(e.target).data("click_status") == 0) {
     $(e.target).data("click_status", 1);
-    $(e.target).find(".material-icons").text("add");
+    $(e.target).find(".msg-click-icons").text("add");
   } else {
     $(e.target).data("click_status", 0);
-    $(e.target).find(".material-icons").text("remove");
+    $(e.target).find(".msg-click-icons").text("remove");
   }
 };
 
@@ -382,10 +382,10 @@ export const handleIncomingMessagePostClick = (e) => {
   });
   if ($(e.target).data("click_status") == 0) {
     $(e.target).data("click_status", 1);
-    $(e.target).find(".material-icons").text("add");
+    $(e.target).find(".msg-click-icons").text("add");
   } else {
     $(e.target).data("click_status", 0);
-    $(e.target).find(".material-icons").text("remove");
+    $(e.target).find(".msg-click-icons").text("remove");
   }
 };
 
