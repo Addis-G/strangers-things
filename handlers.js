@@ -185,7 +185,7 @@ export const handleLogOutLinkClick = async function () {
 };
 
 export const handlePostBtnClick = async function (e) {
-  //e.preventDefault();
+  e.preventDefault();
   if (!isLoggedIn()) {
     $(".login-container").addClass("active");
     return;
@@ -207,11 +207,11 @@ export const handlePostBtnClick = async function (e) {
     }
 
     const { data } = response;
-    if ($(".post-form").data("Operation") !== "Update")
+    if ($(".post-form").data("Operation") !== "Update") {
       window.app_state.posts.push(data.post);
-    if ($(".post-form").data("Operation") !== "Update")
       renderPosts(window.app_state);
-    else {
+    } else {
+      await fetchPosts();
       await usersMe();
       renderPosts(window.app_state.currentUser);
     }

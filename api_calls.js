@@ -122,7 +122,7 @@ export const usersMe = async () => {
       "Bearer " + localStorage.getItem("token")
     );
     const { data } = response;
-    window.app_state.currentUser = data;
+    window.app_state.currentUser = { ...data };
   } catch (error) {
     console.log(error);
   }
